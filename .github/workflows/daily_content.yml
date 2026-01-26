@@ -55,4 +55,4 @@ jobs:
           echo "- Generated content drafts" >> $GITHUB_STEP_SUMMARY
           echo "- Updated dashboard" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
-          echo "View drafts at: https://YOUR_USERNAME.github.io/content-scraper/" >> $GITHUB_STEP_SUMMARY
+          echo "View drafts at: https://markshield07.github.io/content-scraper/" >> $GITHUB_STEP_SUMMARY
