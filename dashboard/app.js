@@ -1,6 +1,7 @@
 // Dashboard App for MAYC #11555 Content Pipeline
 
 const STORAGE_KEY = 'mayc_drafts_status';
+const MAYC_IMAGE_PATH = 'assets/mayc_11555.png';
 
 // State
 let drafts = [];
@@ -110,12 +111,22 @@ function createDraftCard(draft) {
             </div>
 
             <div class="draft-section">
-                <div class="draft-label">Your Draft</div>
-                <p class="draft-text">${escapeHtml(draft.draft)}</p>
+                <div class="draft-content">
+                    <div class="draft-image">
+                        <img src="${MAYC_IMAGE_PATH}" alt="MAYC #11555" class="mayc-preview">
+                    </div>
+                    <div class="draft-text-container">
+                        <div class="draft-label">Your Draft</div>
+                        <p class="draft-text">${escapeHtml(draft.draft)}</p>
+                    </div>
+                </div>
 
                 <div class="actions">
                     <button class="action-btn btn-copy" data-action="copy" data-id="${draft.id}">
-                        📋 Copy
+                        📋 Copy Text
+                    </button>
+                    <button class="action-btn btn-copy-image" data-action="copy-image" data-id="${draft.id}">
+                        🖼️ Copy Image
                     </button>
                     ${draft.status !== 'approved' ? `
                         <button class="action-btn btn-approve" data-action="approve" data-id="${draft.id}">
@@ -155,7 +166,10 @@ function handleAction(event) {
     switch (action) {
         case 'copy':
             copyToClipboard(draft.draft);
-            showToast('Copied to clipboard!');
+            showToast('Text copied to clipboard!');
+            break;
+        case 'copy-image':
+            copyImageToClipboard();
             break;
         case 'approve':
             updateStatus(id, 'approved');
@@ -200,6 +214,41 @@ async function copyToClipboard(text) {
         textarea.select();
         document.execCommand('copy');
         document.body.removeChild(textarea);
+    }
+}
+
+// Copy image to clipboard
+async function copyImageToClipboard() {
+    try {
+        const img = document.querySelector('.mayc-preview');
+        if (!img) {
+            showToast('Image not loaded yet');
+            return;
+        }
+
+        // Create canvas from image
+        const canvas = document.createElement('canvas');
+        canvas.width = img.naturalWidth;
+        canvas.height = img.naturalHeight;
+        const ctx = canvas.getContext('2d');
+        ctx.drawImage(img, 0, 0);
+
+        // Convert to blob and copy
+        canvas.toBlob(async (blob) => {
+            try {
+                await navigator.clipboard.write([
+                    new ClipboardItem({ 'image/png': blob })
+                ]);
+                showToast('Image copied! Paste in X post.');
+            } catch (err) {
+                // Fallback: open image in new tab
+                window.open(MAYC_IMAGE_PATH, '_blank');
+                showToast('Image opened in new tab - right-click to copy');
+            }
+        }, 'image/png');
+    } catch (err) {
+        console.error('Failed to copy image:', err);
+        showToast('Could not copy image - right-click to save');
     }
 }
 
