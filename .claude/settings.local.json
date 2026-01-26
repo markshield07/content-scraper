@@ -1,0 +1,14 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(pip install:*)",
+      "Bash(python execution/analyze_voice.py:*)",
+      "Bash(python:*)",
+      "Bash(start \"\" \"C:\\\\Users\\\\marks\\\\Content Scraper\\\\dashboard\\\\index.html\")",
+      "Bash(git init:*)",
+      "Bash(git add:*)",
+      "Bash(git commit -m \"$\\(cat <<''EOF''\nInitial commit: MAYC #11555 Content Pipeline\n\nAutomated content generation system for @KRAM_btc:\n- Scrapes posts from target X accounts \\(Apify\\)\n- Generates drafts in your voice \\(Claude API\\)\n- Web dashboard for approval/rejection\n- GitHub Actions for daily automation at 6am PST\n\nCo-Authored-By: Claude Opus 4.5 <noreply@anthropic.com>\nEOF\n\\)\")",
+      "Bash(git config:*)"
+    ]
+  }
+}

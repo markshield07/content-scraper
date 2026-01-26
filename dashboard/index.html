@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MAYC #11555 Content Dashboard</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header>
+        <div class="header-content">
+            <h1>🦧 MAYC #11555 Content Dashboard</h1>
+            <p class="subtitle">@KRAM_btc Draft Approval</p>
+        </div>
+        <div class="stats" id="stats">
+            <span class="stat pending">Pending: <span id="pending-count">0</span></span>
+            <span class="stat approved">Approved: <span id="approved-count">0</span></span>
+            <span class="stat rejected">Rejected: <span id="rejected-count">0</span></span>
+        </div>
+    </header>
+
+    <main>
+        <div class="filters">
+            <button class="filter-btn active" data-filter="all">All</button>
+            <button class="filter-btn" data-filter="pending">Pending</button>
+            <button class="filter-btn" data-filter="approved">Approved</button>
+            <button class="filter-btn" data-filter="rejected">Rejected</button>
+        </div>
+
+        <div class="drafts-container" id="drafts-container">
+            <p class="loading">Loading drafts...</p>
+        </div>
+    </main>
+
+    <div class="toast" id="toast"></div>
+
+    <script src="app.js"></script>
+</body>
+</html>

@@ -1,0 +1,34 @@
+# Environment and secrets
+.env
+credentials.json
+token.json
+
+# Intermediate/temp files
+.tmp/
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+venv/
+env/
+.venv/
+ENV/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+API.env
+API.txt
+*.env

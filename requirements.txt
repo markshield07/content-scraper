@@ -1,0 +1,12 @@
+# X/Twitter Scraping
+snscrape
+
+# AI Content Generation
+anthropic
+
+# Utilities
+python-dotenv
+requests
+
+# Date handling
+python-dateutil
