@@ -1,7 +1,7 @@
 // Dashboard App for MAYC #11555 Content Pipeline
 
 const STORAGE_KEY = 'mayc_drafts_status';
-const MAYC_IMAGE_PATH = 'assets/mayc_11555.png';
+const MAYC_IMAGE_PATH = 'assets/mayc_11555.png';  // Fallback image
 
 // State
 let drafts = [];
@@ -100,6 +100,10 @@ function createDraftCard(draft) {
         minute: '2-digit'
     });
 
+    // Use generated image if available, fallback to default MAYC image
+    const imagePath = draft.image_path || MAYC_IMAGE_PATH;
+    const imageTheme = draft.image_theme ? `Theme: ${draft.image_theme}` : 'MAYC #11555';
+
     return `
         <div class="draft-card ${draft.status}" data-id="${draft.id}">
             <div class="source-section">
@@ -113,7 +117,8 @@ function createDraftCard(draft) {
             <div class="draft-section">
                 <div class="draft-content">
                     <div class="draft-image">
-                        <img src="${MAYC_IMAGE_PATH}" alt="MAYC #11555" class="mayc-preview">
+                        <img src="${imagePath}" alt="${imageTheme}" class="mayc-preview" data-draft-id="${draft.id}">
+                        ${draft.image_path ? '<span class="ai-badge">AI Generated</span>' : ''}
                     </div>
                     <div class="draft-text-container">
                         <div class="draft-label">Your Draft</div>
@@ -169,7 +174,7 @@ function handleAction(event) {
             showToast('Text copied to clipboard!');
             break;
         case 'copy-image':
-            copyImageToClipboard();
+            copyImageToClipboard(id);
             break;
         case 'approve':
             updateStatus(id, 'approved');
@@ -218,18 +223,27 @@ async function copyToClipboard(text) {
 }
 
 // Copy image to clipboard
-async function copyImageToClipboard() {
+async function copyImageToClipboard(draftId) {
     try {
-        const img = document.querySelector('.mayc-preview');
+        // Find the specific image for this draft
+        const img = document.querySelector(`img[data-draft-id="${draftId}"]`) || document.querySelector('.mayc-preview');
         if (!img) {
             showToast('Image not loaded yet');
             return;
         }
 
+        // Wait for image to load if needed
+        if (!img.complete) {
+            await new Promise(resolve => {
+                img.onload = resolve;
+                img.onerror = resolve;
+            });
+        }
+
         // Create canvas from image
         const canvas = document.createElement('canvas');
-        canvas.width = img.naturalWidth;
-        canvas.height = img.naturalHeight;
+        canvas.width = img.naturalWidth || 1024;
+        canvas.height = img.naturalHeight || 1024;
         const ctx = canvas.getContext('2d');
         ctx.drawImage(img, 0, 0);
 
@@ -242,7 +256,7 @@ async function copyImageToClipboard() {
                 showToast('Image copied! Paste in X post.');
             } catch (err) {
                 // Fallback: open image in new tab
-                window.open(MAYC_IMAGE_PATH, '_blank');
+                window.open(img.src, '_blank');
                 showToast('Image opened in new tab - right-click to copy');
             }
         }, 'image/png');

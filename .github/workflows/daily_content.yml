@@ -27,7 +27,7 @@ jobs:
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install requests python-dotenv anthropic python-dateutil
+          pip install requests python-dotenv anthropic python-dateutil openai
 
       - name: Create .tmp directory
         run: mkdir -p .tmp
@@ -37,16 +37,17 @@ jobs:
           APIFY_API_KEY: ${{ secrets.APIFY_API_KEY }}
         run: python execution/scrape_x.py
 
-      - name: Generate content drafts
+      - name: Generate content drafts and images
         env:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
         run: python execution/generate_posts.py
 
       - name: Commit and push changes
         run: |
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
-          git add dashboard/drafts.json drafts/
+          git add dashboard/drafts.json dashboard/images/ drafts/
           git diff --staged --quiet || git commit -m "🤖 Daily content update $(date +'%Y-%m-%d')"
           git push
 
@@ -56,6 +57,7 @@ jobs:
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "- Scraped posts from target accounts" >> $GITHUB_STEP_SUMMARY
           echo "- Generated content drafts" >> $GITHUB_STEP_SUMMARY
+          echo "- Generated AI images with DALL-E 3" >> $GITHUB_STEP_SUMMARY
           echo "- Updated dashboard" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "View drafts at: https://markshield07.github.io/content-scraper/" >> $GITHUB_STEP_SUMMARY

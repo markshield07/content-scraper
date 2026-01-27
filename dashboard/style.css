@@ -208,6 +208,22 @@ main {
 
 .draft-image {
     flex-shrink: 0;
+    position: relative;
+}
+
+.ai-badge {
+    position: absolute;
+    bottom: 8px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(157, 78, 221, 0.9);
+    color: white;
+    font-size: 0.65rem;
+    padding: 2px 8px;
+    border-radius: 10px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
 }
 
 .mayc-preview {

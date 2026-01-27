@@ -1,14 +1,16 @@
 """
 Content Generator
 Takes scraped posts and generates drafts in @KRAM_btc's voice.
+Also generates unique images for each draft using DALL-E 3.
 
 Usage: python execution/generate_posts.py [--date YYYY-MM-DD]
 
 Output:
 - drafts/pending_{date}.json
 - dashboard/drafts.json (updated)
+- dashboard/images/{draft_id}.png (generated images)
 
-Requires: ANTHROPIC_API_KEY in .env
+Requires: ANTHROPIC_API_KEY and OPENAI_API_KEY in .env
 """
 
 import os
@@ -340,6 +342,27 @@ def main():
     print(f"Posts processed: {len(posts_to_process)}")
     print(f"Drafts generated: {len(drafts)}")
     print(f"Success rate: {len(drafts)/len(posts_to_process)*100:.0f}%" if posts_to_process else "N/A")
+
+    # Generate images if OPENAI_API_KEY is available
+    openai_key = os.getenv("OPENAI_API_KEY", "")
+    if openai_key and drafts:
+        print("\n" + "=" * 50)
+        print("Generating images with DALL-E 3...")
+        print("=" * 50)
+        try:
+            from generate_images import process_drafts
+            process_drafts(date_str)
+        except ImportError:
+            # Try running as subprocess if import fails
+            import subprocess
+            subprocess.run([
+                sys.executable,
+                str(PROJECT_ROOT / "execution" / "generate_images.py"),
+                "--date", date_str
+            ], check=True)
+    elif not openai_key:
+        print("\nNote: OPENAI_API_KEY not set - skipping image generation")
+        print("Add OPENAI_API_KEY to .env or GitHub secrets to enable images")
 
     print("\n" + "=" * 50)
     print("Content generation complete!")
